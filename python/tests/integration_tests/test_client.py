@@ -3308,6 +3308,7 @@ def test_list_runs_with_child_runs(langchain_client: Client):
         if langchain_client.has_project(project_name=project_name):
             langchain_client.delete_project(project_name=project_name)
 
+
 def test_otel_trace_attributes(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("LANGCHAIN_OTEL_ENABLED", "true")
     monkeypatch.setenv("OTEL_ONLY", "true")
@@ -3387,15 +3388,12 @@ def test_otel_trace_attributes(monkeypatch: pytest.MonkeyPatch):
 
     readable_span = future.get(timeout=0.1)
     readable_span = cast(ReadableSpan, readable_span)
+    assert readable_span.attributes[_otel_exporter.GEN_AI_OPERATION_NAME] == "chat"
     assert (
-            readable_span.attributes[_otel_exporter.GEN_AI_OPERATION_NAME]
-            == "chat"
+        readable_span.attributes[_otel_exporter.GENAI_PROMPT]
+        == '{"prompt":"Hello, OTEL!"}'
     )
     assert (
-            readable_span.attributes[_otel_exporter.GENAI_PROMPT]
-            == '{"prompt":"Hello, OTEL!"}'
-    )
-    assert (
-            readable_span.attributes[_otel_exporter.GENAI_COMPLETION]
-            == '{"answer":"Hello, User!"}'
+        readable_span.attributes[_otel_exporter.GENAI_COMPLETION]
+        == '{"answer":"Hello, User!"}'
     )
