@@ -23,7 +23,10 @@ from opentelemetry.sdk.trace import ReadableSpan
 from pydantic import BaseModel
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 
-from langsmith._internal._background_thread import TracingQueueItem, _otel_tracing_thread_handle_batch
+from langsmith._internal._background_thread import (
+    TracingQueueItem,
+    _otel_tracing_thread_handle_batch,
+)
 from langsmith._internal._operations import serialize_run_dict
 from langsmith._internal._serde import dumps_json
 from langsmith._internal.otel import _otel_exporter
@@ -3384,6 +3387,15 @@ def test_otel_trace_attributes(monkeypatch: pytest.MonkeyPatch):
 
     readable_span = future.get(timeout=0.1)
     readable_span = cast(ReadableSpan, readable_span)
-    assert readable_span.attributes[_otel_exporter.GEN_AI_OPERATION_NAME] == "chat"
-    assert readable_span.attributes[_otel_exporter.GENAI_PROMPT] == '{"prompt":"Hello, OTEL!"}'
-    assert readable_span.attributes[_otel_exporter.GENAI_COMPLETION] == '{"answer":"Hello, User!"}'
+    assert (
+            readable_span.attributes[_otel_exporter.GEN_AI_OPERATION_NAME]
+            == "chat"
+    )
+    assert (
+            readable_span.attributes[_otel_exporter.GENAI_PROMPT]
+            == '{"prompt":"Hello, OTEL!"}'
+    )
+    assert (
+            readable_span.attributes[_otel_exporter.GENAI_COMPLETION]
+            == '{"answer":"Hello, User!"}'
+    )
