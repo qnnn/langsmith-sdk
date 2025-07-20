@@ -3310,7 +3310,7 @@ def test_list_runs_with_child_runs(langchain_client: Client):
 
 
 def test_otel_trace_attributes(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("LANGCHAIN_OTEL_ENABLED", "true")
+    monkeypatch.setenv("LANGSMITH_OTEL_ENABLED", "true")
     monkeypatch.setenv("OTEL_ONLY", "true")
 
     client = Client()
